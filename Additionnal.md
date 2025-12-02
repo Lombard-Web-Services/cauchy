@@ -214,20 +214,6 @@ plt.show()
 - **Huber, P. (1964)** : *Numerically Robust Methods for Polynomial Fits*
 - **Beck, A. (2017)** : *Optimization for Machine Learning*
 
-### Implémentations Industrielles
-- **Ceres Solver** : https://ceres-solver.org
-  - Implémentation la plus complète
-  - Supporte Cauchy, Huber, Tukey, perte personnalisée
-  - Utilisé par Google, Thales, AirBus
-
-- **GTSAM** : https://gtsam.org
-  - SLAM et robotique
-  - Facteurs robustes intégrés
-
-- **OpenCV** : https://opencv.org
-  - `cv::solvePnP` avec poids robustes
-  - `cv::findHomography` avec RANSAC + IRLS
-
 ## ❓ FAQ
 
 **Q: Pourquoi IRLS et pas un optimiseur lorentzien pur ?**
