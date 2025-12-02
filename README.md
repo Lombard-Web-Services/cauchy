@@ -1,4 +1,4 @@
-# 🌀 Solveur Lorentzien avec Cauchy Loss — IRLS Robust Optimizer
+# 🌀 Solveur Lorentzien avec Cauchy Loss — IRLS + L-BFGS
 
 **Auteur : Thibaut LOMBARD**  
 **Licence : MIT**
