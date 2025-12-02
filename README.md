@@ -87,6 +87,8 @@ def cauchy_irls_step(model, X, y, sigma=1.0):
 * ✔ Résultats stables
 * ✔ Paramètres corrects malgré les outliers
 * ✔ Surclasse nettement une régression MSE classique
+
+
 | Critère                      |  Lorentzien |
 | ---------------------------- | :---------: |
 | Sensible aux outliers        |      ❌      |
