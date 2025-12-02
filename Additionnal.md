@@ -120,19 +120,12 @@ Chaque itération résout un problème convexe bien-conditionné → **stabilit�
 
 Pour comprendre en détail :
 
-1. **Lisez le HTML** (recommandé) :
-   ```bash
-   open quasi_lorentzien_irls.html  # macOS
-   start quasi_lorentzien_irls.html # Windows
-   firefox quasi_lorentzien_irls.html # Linux
-   ```
-
-2. **Compilez le LaTeX** :
+1. **Compilez le LaTeX** :
    ```bash
    pdflatex quasi_lorentzien_irls.tex
    ```
 
-3. **Comprenez le code Python** :
+2. **Comprenez le code Python** :
    - Classe `CauchyIRLSSolver`
    - Méthodes `solve_linear()` et `solve_nonlinear()`
    - Historique de convergence dans `self.history`
