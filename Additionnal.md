@@ -15,22 +15,7 @@ Ce projet présente une méthode pratique et éprouvée pour transformer **n'imp
 - ✅ **Auto-adaptatif** : Sigma se met à jour via la médiane des résidus
 - ✅ **Production-ready** : Utilisé par Ceres (Google), GTSAM (Georgia Tech), OpenCV
 
-## 📦 Fichiers Fournis
-
-### 1. **quasi_lorentzien_irls.html** (14 KB)
-Document professionnel de 12 pages avec styling complet.
-- **Imprimable en PDF** : File → Print → Save as PDF
-- Table des matières, sections théoriques, exemples numériques
-- Compatible tous navigateurs modernes
-- **Recommandé** pour lire la théorie complète
-
-### 2. **quasi_lorentzien_irls.tex** (8 KB)
-Source LaTeX brute (français).
-- Compilable avec `pdflatex` ou `xelatex`
-- Prêt pour inclusion dans publications
-- Équations mathématiques complètes en LaTeX
-
-### 3. **quasi_lorentzien_irls.py** (12 KB)
+### 1. **quasi_lorentzien_irls.py** (12 KB)
 Script Python standalone exécutable.
 - Classe `CauchyIRLSSolver` complète
 - 2 exemples numériques (linéaire + quadratique)
