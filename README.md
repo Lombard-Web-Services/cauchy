@@ -57,45 +57,32 @@ Minimiser ∑ wi · (yi - fθ(xi))² avec L-BFGS
 → L-BFGS assure une mise à jour stable et précise  
 → Les outliers voient leur poids tendre vers zéro
 
+## 🧠 Utilisation avec un réseau de neurones (PyTorch)
 
-
-## 🐍 Exemple minimal (fourni dans le dépôt)
-
-Le solveur ci-dessous effectue une régression linéaire robuste :
+Avec PyTorch, on ne peut pas résoudre les moindres carrés pondérés analytiquement.
+On applique donc une boucle interne d’optimisation l’idée IRLS reste identique.
 
 ```python
-import numpy as np
-from scipy.optimize import minimize
+import torch
 
-# Données synthétiques avec outliers
-np.random.seed(0)
-X = np.linspace(-5, 5, 100).reshape(-1, 1)
-y = 2 * X.ravel() + 1 + np.random.normal(0, 0.5, 100)
-y[::10] += np.random.normal(0, 10, 10)  # outliers
-
-def irls_cauchy(X, y, max_iter=15, sigma=1.0):
-    n = X.shape[1]
-    theta = np.random.randn(n + 1)  # [b, w]
-
-    for k in range(max_iter):
-        y_pred = X @ theta[1:] + theta[0]
+def cauchy_irls_step(model, X, y, sigma=1.0):
+    model.eval()
+    with torch.no_grad():
+        y_pred = model(X)
         r = y - y_pred
-        w = 1.0 / (sigma**2 + r**2 + 1e-8)
+        w = 1.0 / (sigma**2 + r**2)
 
-        def weighted_mse(params):
-            y_p = X @ params[1:] + params[0]
-            return np.sum(w * (y - y_p)**2)
+    model.train()
+    optimizer = torch.optim.Adam(model.parameters(), lr=1e-3)
+    for _ in range(5):  # mini-optim interne
+        optimizer.zero_grad()
+        y_pred = model(X)
+        loss = (w * (y - y_pred)**2).mean()
+        loss.backward()
+        optimizer.step()
+```
 
-        # Mise à jour par L-BFGS
-        theta = minimize(weighted_mse, theta, method='L-BFGS-B').x
-        sigma = np.median(np.abs(r)) + 1e-6
-
-    return theta
-
-theta_est = irls_cauchy(X, y)
-print("θ estimé (b, w) :", theta_est)```
-
-## 🧠 Avantages
+## Avantages
 
 ✔ Résultats stables
 ✔ Paramètres corrects malgré les outliers
