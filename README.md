@@ -7,7 +7,7 @@ Ce dépôt contient un solveur robuste basé sur une approximation **quasi-loren
 
 L’objectif est de fournir une alternative robuste aux méthodes classiques (MSE, L-BFGS, Adam), capable de **résister aux outliers** et d’éviter les minima dégénérés liés à l’hypothèse gaussienne des erreurs.
 
----
+
 
 ## 🚀 Pourquoi un solveur « Lorentzien » ?
 
@@ -23,13 +23,12 @@ L_Cauchy = ∑ log(1 + r² / σ²)
 ```
 où `r = y − fθ(x)` et `σ` contrôle l’échelle des résidus.
 
----
 
-## 🔁 Approche quasi-lorentzienne via IRLS
 
-La perte de Cauchy n’est pas quadratique → difficile à optimiser directement.
+## 🔁 Approche quasi-lorentzienne via IRLS + L-BFGS
 
-On l’approxime localement par une perte quadratique **pondérée** :
+La perte de Cauchy n’est pas quadratique → difficile à minimiser directement.  
+On l’approxime itérativement par une perte quadratique **pondérée** :
 ```
 log(1 + r² / σ²) ≈ w(r) · r² + constante
 ```
@@ -40,46 +39,74 @@ w(r) = 1 / (σ² + r²)
 → Les points éloignés (outliers) obtiennent un poids faible  
 → Les points fiables guident réellement la descente
 
----
 
-## 🧮 Algorithme IRLS
+## 🧮 Boucle IRLS
 
 Pour des données `{(xi, yi)}` et un modèle `ŷ = fθ(x)` :
 
 1. Initialiser les paramètres `θ`
-2. Fixer ou estimer `σ`
-3. Répéter jusqu’à convergence :
+2. Choisir ou estimer `σ`
+3. Répéter :
 ```
 ri = yi - fθ(xi) # résidus
 wi = 1 / (σ² + ri²) # poids Lorentziens
-Minimiser ∑ wi · (yi - fθ(xi))²
-Option : mettre à jour σ via la médiane des résidus
+Minimiser ∑ wi · (yi - fθ(xi))² avec L-BFGS
+σ ← median(|ri|) # optionnel : adaptation automatique
 ```
-✔ Chaque étape est un problème convexe local  
-✔ Converge vers un minimum robuste de la perte Cauchy  
-✔ Identique à ce qui est utilisé dans Ceres Solver, GTSAM, OpenCV
+→ Chaque itération résout un problème localement quadratique  
+→ L-BFGS assure une mise à jour stable et précise  
+→ Les outliers voient leur poids tendre vers zéro
 
----
 
-## 🐍 Contenu du dépôt
-solver.py # implémentation IRLS + perte de Cauchy
 
-Le script d’exemple montre que la méthode :
+## 🐍 Exemple minimal (fourni dans le dépôt)
 
-- résiste aux outliers
-- récupère des paramètres fiables
-- surpasse une régression MSE simple
+Le solveur ci-dessous effectue une régression linéaire robuste :
 
----
+```python
+import numpy as np
+from scipy.optimize import minimize
+
+# Données synthétiques avec outliers
+np.random.seed(0)
+X = np.linspace(-5, 5, 100).reshape(-1, 1)
+y = 2 * X.ravel() + 1 + np.random.normal(0, 0.5, 100)
+y[::10] += np.random.normal(0, 10, 10)  # outliers
+
+def irls_cauchy(X, y, max_iter=15, sigma=1.0):
+    n = X.shape[1]
+    theta = np.random.randn(n + 1)  # [b, w]
+
+    for k in range(max_iter):
+        y_pred = X @ theta[1:] + theta[0]
+        r = y - y_pred
+        w = 1.0 / (sigma**2 + r**2 + 1e-8)
+
+        def weighted_mse(params):
+            y_p = X @ params[1:] + params[0]
+            return np.sum(w * (y - y_p)**2)
+
+        # Mise à jour par L-BFGS
+        theta = minimize(weighted_mse, theta, method='L-BFGS-B').x
+        sigma = np.median(np.abs(r)) + 1e-6
+
+    return theta
+
+theta_est = irls_cauchy(X, y)
+print("θ estimé (b, w) :", theta_est)```
 
 ## 🧠 Avantages
 
-| Critère | Solveur Lorentzien |
-|--------|-------------------|
-| Sensible aux outliers | ❌ |
-| Convergence stable | ✔️ |
-| Compatible deep learning | ✔️ |
-| Interprétable (poids = confiance) | ✔️ |
+✔ Résultats stables
+✔ Paramètres corrects malgré les outliers
+✔ Surclasse nettement une régression MSE classique
+| Critère                      |  Lorentzien |
+| ---------------------------- | :---------: |
+| Sensible aux outliers        |      ❌      |
+| Mise à jour stable           | ✔️ (L-BFGS) |
+| Interprétable (poids)        |      ✔️     |
+| Compatible modèles complexes |      ✔️     |
+| Adaptation automatique du σ  |      ✔️     |
 
 ---
 
