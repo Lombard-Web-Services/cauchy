@@ -213,6 +213,7 @@ plt.show()
 ### Théorie
 - **Huber, P. (1964)** : *Numerically Robust Methods for Polynomial Fits*
 - **Beck, A. (2017)** : *Optimization for Machine Learning*
+- **Frank Nielsen (2023)** : On f-Divergences Between Cauchy Distributions [IEEE]
 
 ## ❓ FAQ
 
