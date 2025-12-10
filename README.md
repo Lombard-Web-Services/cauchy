@@ -105,3 +105,6 @@ def cauchy_irls_step(model, X, y, sigma=1.0):
 git clone https://github.com/cauchy
 python solver.py
 ```
+
+## technique subsidiaire  : Optimiseur Quasi-Lorentzien via IRLS 
+👉 Consultez la [documentation complète](https://lombard-web-services.github.io/cauchy/additionnal.md) pour plus de détails.
