@@ -106,5 +106,14 @@ git clone https://github.com/cauchy
 python solver.py
 ```
 
-## Optimiseur Quasi-Lorentzien via IRLS 
-👉 Consultez la [documentation complète](https://lombard-web-services.github.io/cauchy/Additionnal.md) pour plus de détails.
+## 🛠️ Optimiseur Quasi-Lorentzien via IRLS  
+*Transformez n’importe quel optimiseur (L-BFGS, Adam, SGD…) en solveur robuste aux outliers — sans réécrire une ligne de code.*
+
+📘 **[Lisez le guide rapide](https://lombard-web-services.github.io/cauchy/Additionnal)**  
+→ Démarrage en 2 minutes, exemples prêts à l’emploi, intégration immédiate.
+
+📚 **[Explorez la documentation complète](https://lombard-web-services.github.io/cauchy/quasi_lorentzien_irls.html)**  
+→ Théorie, schéma IRLS, poids lorentziens, mise à jour adaptative de σ, applications en vision, robotique et traitement du signal.
+
+💻 **[Testez le code Python directement](https://github.com/Lombard-Web-Services/cauchy/blob/main/quasi_lorentzien_irls.py)**  
+→ Une seule classe (`CauchyIRLSSolver`), deux méthodes (`solve_linear`, `solve_nonlinear`), compatible NumPy/SciPy, prête pour la production.
